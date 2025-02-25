@@ -8,7 +8,7 @@ import colorsys
 pygame.init()
 
 # Screen settings
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1000, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Touch Points Visualization")
 clock = pygame.time.Clock()
@@ -79,19 +79,29 @@ class SensorBar:
     def draw(self, screen):
         """Draw the sensor bar on the screen."""
         bar_color = self.get_rainbow_color() if self.is_dial else self.color
-        bar_width = (self.value / 1023) * WIDTH
+        bar_width = (self.value / 1023) * WIDTH / 2
         pygame.draw.rect(screen, bar_color, (self.position[0], self.position[1], bar_width, 30))
 
         font = pygame.font.Font(None, 24)
         text = font.render(f"{self.label}: {int(self.value)}", True, (255, 255, 255))
         screen.blit(text, (self.position[0], self.position[1] - 20))
 
-# Define touch point positions
 touchpoint_positions = {
-    "Workbench 1": [(100, 150), (150, 150), (200, 150), (250, 150)],
-    "Workbench 2": [(400, 150), (450, 150), (500, 150), (550, 150)],
-    "3D Printer 1": [(300, 300), (350, 300)],
-    "3D Printer 2": [(500, 300), (550, 300)]
+    # Arrange touchpoints for workbenches
+    "Workbench 1": [(100, 100)],
+    "Workbench 2": [(200, 150)],
+    "Workbench 3": [(300, 200)],
+    "Workbench 4": [(400, 100)],
+    "Workbench 5": [(500, 150)],
+    "Workbench 6": [(600, 200)],
+
+    # Arrange touchpoints for 3D printers in a separate area
+    "3D Printer 1": [(100, 400)],
+    "3D Printer 2": [(250, 400)],
+    "3D Printer 3": [(400, 400)],
+    "3D Printer 4": [(100, 470)],
+    "3D Printer 5": [(250, 470)],
+    "3D Printer 6": [(400, 470)],
 }
 
 # Create touch points
@@ -112,10 +122,28 @@ def draw_labels():
 
 # Create sensor bars
 sensor_bars = [
-    SensorBar("Distance", (255, 0, 0), 50, 400),
-    SensorBar("Dial", (0, 255, 0), 50, 450, is_dial=True),
-    SensorBar("Light", (0, 0, 255), 50, 500)
+    SensorBar("Distance", (255, 0, 0), 50, 600),
+    SensorBar("Dial", (0, 255, 0), 50, 650, is_dial=True),
+    SensorBar("Light", (0, 0, 255), 50, 700)
 ]
+
+def draw_text_box(screen, x, y, width, height, text, text_color, border_color, border_thickness):
+    # Define the text box area
+    text_box_rect = pygame.Rect(x, y, width, height)
+
+    font = pygame.font.SysFont(None, 36)
+    
+    # Draw the text box border
+    pygame.draw.rect(screen, border_color, text_box_rect, border_thickness)
+    
+    # Render the text
+    text_surface = font.render(text, True, text_color)
+    
+    # Calculate text position within the text box
+    text_x = x + 10  # Offset by 10 pixels from the left
+    text_y = y + 10  # Offset by 10 pixels from the top
+    screen.blit(text_surface, (text_x, text_y))
+
 
 
 #
@@ -179,6 +207,20 @@ def default_line(line):
     data = list(map(int, line.split(',')))
     data[3] = -1
     data[4] = 1
+
+    if data[0] > 1023: 
+        data[0] = 1023
+    if data[1] > 1023: 
+        data[1] = 1023
+    if data[2] > 1023: 
+        data[2] = 1023
+
+    if data[0] < 0: 
+        data[0] = 0
+    if data[1] < 0: 
+        data[1] = 0
+    if data[2] < 0: 
+        data[2] = 0    
 
     # Join the updated list back into a CSV string
     updated_line = ','.join(map(str, data))
@@ -250,6 +292,23 @@ while running:
     #
     #
     #
+
+# Draw the text box using the function
+    # Define colors
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    draw_text_box(
+        screen=screen,
+        x=600, 
+        y=500, 
+        width=400, 
+        height=300, 
+        text='Makerspace touchpoints...', 
+        text_color=WHITE, 
+        border_color=BLACK, 
+        border_thickness=2
+    )    
+
 
     # Render touch points
     for touch_point in touch_points:
