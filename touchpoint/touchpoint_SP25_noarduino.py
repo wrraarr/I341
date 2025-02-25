@@ -14,8 +14,14 @@ pygame.display.set_caption("Touch Points Visualization")
 clock = pygame.time.Clock()
 
 
+#
+# NO ARDUINO TEST CODE
+#
+# Lines needed for communication with arduino are commented out with -> ###
+
+
 # Serial communication setup (update with correct port)
-# ser = serial.Serial('/dev/cu.usbmodem1401', 9600)
+### ser = serial.Serial('/dev/cu.usbmodem1401', 9600)
 
 
 # TouchPoint class represents a touch sensor on the screen
@@ -112,6 +118,9 @@ sensor_bars = [
 ]
 
 
+#
+# NO ARDUINO FUNCTION
+#
 # Function to update CSV based on key inputs
 def update_csv(key, line):
     # Split line string into a list of integers
@@ -162,6 +171,9 @@ def update_csv(key, line):
     updated_line = ','.join(map(str, data))
     return updated_line
 
+#
+# NO ARDUINO FUNCTION
+#
 # set the sensor line to default
 def default_line(line):
     data = list(map(int, line.split(',')))
@@ -172,7 +184,10 @@ def default_line(line):
     updated_line = ','.join(map(str, data))
     return updated_line
 
-
+#
+# NO ARDUINO VARIABLE
+#
+# Initial simulator sensor values
 line = '100,200,300,-1,1'
 
 # Game loop
@@ -186,14 +201,20 @@ while running:
             running = False
         else:
     # Read and process serial data from Arduino
-    # ser.in_waiting:
-        # try:
-            # line = ser.readline().decode('utf-8').strip()
+    ### ser.in_waiting:
+        ### try:
+            ### line = ser.readline().decode('utf-8').strip()
+
+            #
+            # NO ARDUINO PROCEDURE
+            #
             if event.type == pygame.KEYDOWN:
                 line = update_csv(event.key, line)
                 print(line)
-            # else:
-            #     line = '100,200,300,-1,1' ### TEST LINE
+            #
+            #
+            #
+
             data = list(map(int, line.split(',')))  # Convert all values to integers
 
             # Ensure correct data format before proceeding
@@ -218,10 +239,17 @@ while running:
                         touch_point.color = tuple(int(c * 255) for c in touch_point.color)
                         touch_point.toggle()
 
-        # except (ValueError, IndexError):
-        #     print("Warning: Invalid or incomplete data received")
+        ### except (ValueError, IndexError):
+        ###     print("Warning: Invalid or incomplete data received")
 
+    #
+    # NO ARDUINO
+    #
+    # Reset all buttons and capacitive pads to inactive
     line = default_line(line)
+    #
+    #
+    #
 
     # Render touch points
     for touch_point in touch_points:
@@ -239,7 +267,7 @@ while running:
 
 # Clean up
 pygame.quit()
-# ser.close()
+### ser.close()
 
 
 
