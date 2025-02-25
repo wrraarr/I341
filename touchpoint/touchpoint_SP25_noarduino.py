@@ -111,6 +111,70 @@ sensor_bars = [
     SensorBar("Light", (0, 0, 255), 50, 500)
 ]
 
+
+# Function to update CSV based on key inputs
+def update_csv(key, line):
+    # Split line string into a list of integers
+    data = list(map(int, line.split(',')))
+
+    # Modify values based on key pressed
+    if key == pygame.K_1:  # If '1' key is pressed
+        data[0] += 25  # Modify first value
+    elif key == pygame.K_q:
+        data[0] -= 25
+    elif key == pygame.K_2:  # If '2' key is pressed
+        data[1] += 25  # Modify second value
+    elif key == pygame.K_w:
+        data[1] -= 25
+    elif key == pygame.K_4:  # If '3' key is pressed
+        data[2] += 25  # Modify third value
+    elif key == pygame.K_r:
+        data[2] -= 25
+
+    elif key == pygame.K_a:
+        data[3] = 1
+    elif key == pygame.K_b:
+        data[3] = 2
+    elif key == pygame.K_c:
+        data[3] = 3
+    elif key == pygame.K_d:
+        data[3] = 4
+    elif key == pygame.K_e:
+        data[3] = 5
+    elif key == pygame.K_f:
+        data[3] = 6
+    elif key == pygame.K_g:
+        data[3] = 7
+    elif key == pygame.K_h:
+        data[3] = 8
+    elif key == pygame.K_i:
+        data[3] = 9
+    elif key == pygame.K_j:
+        data[3] = 10
+    elif key == pygame.K_k:
+        data[3] = 11
+    elif key == pygame.K_l:
+        data[3] = 12
+    elif key == pygame.K_m:
+        data[4] = 0
+
+    # Join the updated list back into a CSV string
+    updated_line = ','.join(map(str, data))
+    return updated_line
+
+# set the sensor line to default
+def default_line(line):
+    data = list(map(int, line.split(',')))
+    data[3] = -1
+    data[4] = 1
+
+    # Join the updated list back into a CSV string
+    updated_line = ','.join(map(str, data))
+    return updated_line
+
+
+line = '100,200,300,-1,1'
+
 # Game loop
 running = True
 while running:
@@ -120,12 +184,16 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+        else:
     # Read and process serial data from Arduino
-    if True: # ser.in_waiting:
-        try:
+    # ser.in_waiting:
+        # try:
             # line = ser.readline().decode('utf-8').strip()
-            line = '100,200,300,12,1' ### TEST LINE
+            if event.type == pygame.KEYDOWN:
+                line = update_csv(event.key, line)
+                print(line)
+            # else:
+            #     line = '100,200,300,-1,1' ### TEST LINE
             data = list(map(int, line.split(',')))  # Convert all values to integers
 
             # Ensure correct data format before proceeding
@@ -150,8 +218,10 @@ while running:
                         touch_point.color = tuple(int(c * 255) for c in touch_point.color)
                         touch_point.toggle()
 
-        except (ValueError, IndexError):
-            print("Warning: Invalid or incomplete data received")
+        # except (ValueError, IndexError):
+        #     print("Warning: Invalid or incomplete data received")
+
+    line = default_line(line)
 
     # Render touch points
     for touch_point in touch_points:
@@ -169,7 +239,7 @@ while running:
 
 # Clean up
 pygame.quit()
-ser.close()
+# ser.close()
 
 
 
