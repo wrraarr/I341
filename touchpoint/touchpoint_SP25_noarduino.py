@@ -125,7 +125,7 @@ while running:
     if True: # ser.in_waiting:
         try:
             # line = ser.readline().decode('utf-8').strip()
-            line = '100,200,300,1,1' ### TEST LINE
+            line = '100,200,300,12,1' ### TEST LINE
             data = list(map(int, line.split(',')))  # Convert all values to integers
 
             # Ensure correct data format before proceeding
